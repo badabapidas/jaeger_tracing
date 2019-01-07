@@ -35,6 +35,16 @@ public final class Tracing {
 		return config.getTracer();
 	}
 
+	/**
+	 * Extract the span context from the incoming request using tracer.extract
+	 * 
+	 * The logic here is similar to the client side instrumentation, except that we
+	 * are using tracer.extract and tagging the span as span.kind=server. Instead of
+	 * using a dedicated adapter class to convert JAXRS HttpHeaders type into
+	 * io.opentracing.propagation.TextMap, we are copying the headers to a plain
+	 * HashMap<String, String> and using a standard adapter TextMapExtractAdapter.
+	 * 
+	 */
 	public static Scope startServerSpan(Tracer tracer, javax.ws.rs.core.HttpHeaders httpHeaders, String operationName) {
 		// format the headers for extraction
 		MultivaluedMap<String, String> rawHeaders = httpHeaders.getRequestHeaders();
